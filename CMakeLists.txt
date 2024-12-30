@@ -12,6 +12,9 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  actionlib_msgs
+  nav_msgs
+  assignment_2_2024
 )
 
 ## System dependencies are found with CMake's conventions
@@ -108,6 +111,8 @@ catkin_package(
 #  LIBRARIES assignment2_rt
 #  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
+  CATKIN_DEPENDS roscpp message_runtime std_msgs
+  CATKIN_DEPENDS assignment_2_2024
 )
 
 ###########
@@ -134,7 +139,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-   add_executable(Node1 src/assignment2_rt_node1.cpp)
+
+   add_executable(Node1 src/Node1.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -144,6 +150,7 @@ include_directories(
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
+
    add_dependencies(Node1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
