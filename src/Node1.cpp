@@ -14,21 +14,21 @@ using namespace std;
 
 //as request i exctract from odom topic robot (vel and pos) and publish it to my custom msg
 void odomCallback(const nav_msgs::Odometry::ConstPtr& msg, ros::Publisher pub) {
-    assignment2_rt::RobotPosition pos;
+    assignment2_rt::RobotPosition robot_position;
     
-    pos.x = msg->pose.pose.position.x;
-    pos.y = msg->pose.pose.position.y;
-    pos.vel_x = msg->twist.twist.linear.x;
-    pos.vel_z = msg->twist.twist.angular.z;
+    robot_position.x = msg->pose.pose.position.x;
+    robot_position.y = msg->pose.pose.position.y;
+    robot_position.vel_x = msg->twist.twist.linear.x;
+    robot_position.vel_z = msg->twist.twist.angular.z;
     
-    pub.publish(pos);
+    pub.publish(robot_position);
 }
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "simple_action_client_node"); //initializes ros node as action client node
+    ros::init(argc, argv, "Node1"); //initializes ros node as action client node
     ros::NodeHandle nh;
 
 
-    actionlib::ActionClient<assignment_2_2024::PlanningAction> ac("/reaching_goal", true); //create an action client for the server target action
+    actionlib::SimpleActionClient<assignment_2_2024::PlanningAction> ac("reaching_goal", true); //create an action client for the server target action
 
 
     ROS_INFO("Waiting for action server to start..."); //waiting act serv to start
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
     
     ROS_INFO("Action server started.");
     
-    ros::Publisher position_pub = nh.advertise<assignment2_rt::RobotPosition>("/robot_position", 10); //pub robot pos information to robot_pos topic.
+    ros::Publisher position_pub = nh.advertise<assignment2_rt::RobotPosition>("robot_position", 10); //pub robot pos information to robot_pos topic.
 
     
     ros::Subscriber odom_sub = nh.subscribe<nav_msgs::Odometry>("/odom", 10, 
@@ -59,20 +59,28 @@ int main(int argc, char** argv) {
             cin >> target_x; 
             cin >> target_y;
 
-            assignment_2_2024::TargetGoal goal; //here i fill an object TargetGoal goal and i fill it with the target values
-            goal.target_pose.x = target_x;
-            goal.target_pose.y = target_y;
+            assignment_2_2024::PlanningGoal goal; //here i fill an object TargetGoal goal and i fill it with the target values
+            goal.target_pose.pose.position.x = target_x;
+            goal.target_pose.pose.position.y = target_y;
+            goal.target_pose.pose.orientation.w = 1.0; //default oreintation in quaternion check later 
             
             ac.sendGoal(goal,
-                        [](const actionlib::SimpleClientGoalState& state,
-                           const assignment_2_2024::TargetResultConstPtr& result) {
-                            ROS_INFO("Target reached. Final state: %s", state.toString().c_str());
-                        },
-                        actionlib::SimpleActionClient<assignment_2_2024::PlanningAction>::SimpleActiveCallback(),
-                        [](const assignment_2_2024::TargetFeedbackConstPtr& feedback) {
-                            ROS_INFO("Current position: (%.2f, %.2f)", feedback->current_pose.x, feedback->current_pose.y);
-                        });
-        } else if (choice == 2) {
+                [](const actionlib::SimpleClientGoalState &state,
+                   const assignment_2_2024::PlanningResultConstPtr &result) {
+                    if (state == actionlib::SimpleClientGoalState::SUCCEEDED) {
+                        ROS_INFO("Target reached successfully!");
+                    } else {
+                        ROS_WARN("Target failed with state: %s", state.toString().c_str());
+                    }
+                },
+                []() {
+                    ROS_INFO("Goal is now active.");
+                },
+                [](const assignment_2_2024::PlanningFeedbackConstPtr &feedback) {
+                    ROS_INFO("Feedback received: Current position -> x: %.2f, y: %.2f",
+                             feedback->actual_pose.position.x,
+                             feedback->actual_pose.position.y);
+                }); } else if (choice == 2) {
             ac.cancelGoal();
             ROS_INFO("Goal canceled.");
         } else {
@@ -85,4 +93,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
- 

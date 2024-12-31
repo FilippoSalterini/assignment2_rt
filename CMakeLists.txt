@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib_msgs
   nav_msgs
   assignment_2_2024
+  actionlib
 )
 
 ## System dependencies are found with CMake's conventions
@@ -75,6 +76,8 @@ add_message_files(
 generate_messages(
    DEPENDENCIES
    std_msgs
+   actionlib_msgs
+
 )
 
 ################################################
@@ -111,8 +114,7 @@ catkin_package(
 #  LIBRARIES assignment2_rt
 #  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
-  CATKIN_DEPENDS roscpp message_runtime std_msgs
-  CATKIN_DEPENDS assignment_2_2024
+  CATKIN_DEPENDS roscpp message_runtime std_msgs actionlib assignment_2_2024
 )
 
 ###########
@@ -142,6 +144,7 @@ include_directories(
 
    add_executable(Node1 src/Node1.cpp)
 
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -157,6 +160,12 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(Node1
+  ${catkin_LIBRARIES}
+  ${roscpp_LIBRARIES}
+  ${message_runtime_LIBRARIES}
+  ${rosconsole_LIBRARIES} 
+)
 
 #############
 ## Install ##
