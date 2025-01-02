@@ -1,0 +1,19 @@
+<launch>
+
+    <node
+        name="Node1"
+        pkg="assignment2_rt"
+        type="Node1"
+        output="screen">
+    </node>
+
+    <node
+        name="Node2_service"
+        pkg="assignment2_rt"
+        type="Node2_service"
+        output="screen">
+    </node> 
+    
+    <node name="shutdown" pkg="roslaunch" type="shutdown" />
+
+</launch>

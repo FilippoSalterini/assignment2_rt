@@ -16,6 +16,13 @@ using namespace std;
 float last_x_target = 0.0;
 float last_y_target = 0.0;
 
+
+void targetCallback(const assignment_2_2024::PlanningGoal& goal) {
+    last_x_target = goal.target_pose.pose.position.x;
+    last_y_target = goal.target_pose.pose.position.y;
+    ROS_INFO("Updated last target to x = %.2f, y = %.2f", last_x_target, last_y_target);
+}
+
 //as request i exctract from odom topic robot (vel and pos) and publish it to my custom msg
 void odomCallback(const nav_msgs::Odometry::ConstPtr& msg, ros::Publisher pub) {
     assignment2_rt::RobotPosition robot_position;
@@ -34,13 +41,6 @@ bool getLastTarget(assignment2_rt::ReturnLastTarget::Request &req, assignment2_r
     res.y = last_y_target;
     ROS_INFO("Returning last target coordinates: x = %.2f, y = %.2f", res.x, res.y);
     return true;
-}
-//update the last target set
-void targetCallback(const assignment_2_2024::PlanningGoal& goal) {
-    last_x_target = goal.target_pose.pose.position.x;
-    last_y_target = goal.target_pose.pose.position.y;
-    //check if target is being updated
-    ROS_INFO("Updated last target to x = %.2f, y = %.2f", last_x_target, last_y_target);
 }
 
 int main(int argc, char** argv) {
@@ -100,10 +100,10 @@ int main(int argc, char** argv) {
                              feedback->actual_pose.position.x,
                              feedback->actual_pose.position.y);
                 });
+                
                 targetCallback(goal); // so in this way i update last_x_target and last_y_target
 
                       } else if (choice == 2) {
-            ac.cancelGoal();
                 ROS_INFO("User selected to cancel the goal.");
                 ac.cancelGoal();
                 ROS_INFO("Goal canceled.");
