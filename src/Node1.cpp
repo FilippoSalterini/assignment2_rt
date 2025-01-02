@@ -8,9 +8,13 @@ topic/odom */
 #include <nav_msgs/Odometry.h>                    //it s a standard ROS message type to get pos and vel of the robot
 #include "assignment_2_2024/PlanningAction.h" 
 #include "assignment2_rt/RobotPosition.h"   //my custom message to publish robot position and velocity
+#include "assignment2_rt/ReturnLastTarget.h"   
 
 
 using namespace std;
+
+float last_x_target = 0.0;
+float last_y_target = 0.0;
 
 //as request i exctract from odom topic robot (vel and pos) and publish it to my custom msg
 void odomCallback(const nav_msgs::Odometry::ConstPtr& msg, ros::Publisher pub) {
@@ -23,11 +27,25 @@ void odomCallback(const nav_msgs::Odometry::ConstPtr& msg, ros::Publisher pub) {
     
     pub.publish(robot_position);
 }
+
+// service callback to return the last target set
+bool getLastTarget(assignment2_rt::ReturnLastTarget::Request &req, assignment2_rt::ReturnLastTarget::Response &res) {
+    res.x = last_x_target;
+    res.y = last_y_target;
+    ROS_INFO("Returning last target coordinates: x = %.2f, y = %.2f", res.x, res.y);
+    return true;
+}
+//update the last target set
+void targetCallback(const assignment_2_2024::PlanningGoal& goal) {
+    last_x_target = goal.target_pose.pose.position.x;
+    last_y_target = goal.target_pose.pose.position.y;
+    //check if target is being updated
+    ROS_INFO("Updated last target to x = %.2f, y = %.2f", last_x_target, last_y_target);
+}
+
 int main(int argc, char** argv) {
     ros::init(argc, argv, "Node1"); //initializes ros node as action client node
     ros::NodeHandle nh;
-
-
     actionlib::SimpleActionClient<assignment_2_2024::PlanningAction> ac("reaching_goal", true); //create an action client for the server target action
 
 
@@ -39,11 +57,12 @@ int main(int argc, char** argv) {
     ros::Publisher position_pub = nh.advertise<assignment2_rt::RobotPosition>("robot_position", 10); //pub robot pos information to robot_pos topic.
 
     
-    ros::Subscriber odom_sub = nh.subscribe<nav_msgs::Odometry>("/odom", 10, 
-        boost::bind(odomCallback, _1, position_pub)); //it subscribes to odom topic for receiving the robot's odometry data.
+    ros::Subscriber odom_sub = nh.subscribe<nav_msgs::Odometry>("/odom", 10, boost::bind(odomCallback, _1, position_pub)); 
+        //it subscribes to odom topic for receiving the robot's odometry data.
         //CHECK BOOST::BIND
         //boot::bind used for pass the position_pub publisher to the odomCallback
 
+    ros::ServiceServer service = nh.advertiseService("get_last_target", getLastTarget);
 
     ros::Rate loop_rate(10);
     
@@ -52,18 +71,18 @@ int main(int argc, char** argv) {
         int choice;
         ROS_INFO("Enter (1) to set a target or (2) to cancel a target: ");
         cin >> choice;
-
+      
         if (choice == 1) {
             float target_x, target_y;
             ROS_INFO("Enter a target coordinates (x, y): ");
             cin >> target_x; 
             cin >> target_y;
-
+        
             assignment_2_2024::PlanningGoal goal; //here i fill an object TargetGoal goal and i fill it with the target values
             goal.target_pose.pose.position.x = target_x;
             goal.target_pose.pose.position.y = target_y;
             goal.target_pose.pose.orientation.w = 1.0; //default oreintation in quaternion check later 
-            
+   
             ac.sendGoal(goal,
                 [](const actionlib::SimpleClientGoalState &state,
                    const assignment_2_2024::PlanningResultConstPtr &result) {
@@ -80,9 +99,14 @@ int main(int argc, char** argv) {
                     ROS_INFO("Feedback received: Current position -> x: %.2f, y: %.2f",
                              feedback->actual_pose.position.x,
                              feedback->actual_pose.position.y);
-                }); } else if (choice == 2) {
+                });
+                targetCallback(goal); // so in this way i update last_x_target and last_y_target
+
+                      } else if (choice == 2) {
             ac.cancelGoal();
-            ROS_INFO("Goal canceled.");
+                ROS_INFO("User selected to cancel the goal.");
+                ac.cancelGoal();
+                ROS_INFO("Goal canceled.");
         } else {
             ROS_WARN("Invalid choice.");
         }
