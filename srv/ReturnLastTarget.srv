@@ -1,0 +1,7 @@
+# Request
+# No fields in request casue we are just returning position
+---
+
+# Response
+float64 x
+float64 y

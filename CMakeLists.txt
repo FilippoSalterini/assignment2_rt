@@ -59,11 +59,11 @@ add_message_files(
 )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
+add_service_files(
+    FILES
+    ReturnLastTarget.srv
 #   Service2.srv
-# )
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -77,7 +77,6 @@ generate_messages(
    DEPENDENCIES
    std_msgs
    actionlib_msgs
-
 )
 
 ################################################
@@ -143,6 +142,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 
    add_executable(Node1 src/Node1.cpp)
+   add_executable(Node2_service src/Node2_service.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -155,6 +155,7 @@ include_directories(
 ## same as for the library above
 
    add_dependencies(Node1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+   add_dependencies(Node2_service ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
@@ -165,6 +166,9 @@ target_link_libraries(Node1
   ${roscpp_LIBRARIES}
   ${message_runtime_LIBRARIES}
   ${rosconsole_LIBRARIES} 
+)
+target_link_libraries(Node2_service
+  ${catkin_LIBRARIES}
 )
 
 #############
@@ -186,6 +190,9 @@ target_link_libraries(Node1
 # install(TARGETS ${PROJECT_NAME}_node
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
+install(TARGETS Node2_service
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
