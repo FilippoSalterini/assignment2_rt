@@ -16,7 +16,6 @@ using namespace std;
 float last_x_target = 0.0;
 float last_y_target = 0.0;
 
-
 void targetCallback(const assignment_2_2024::PlanningGoal& goal) {
     last_x_target = goal.target_pose.pose.position.x;
     last_y_target = goal.target_pose.pose.position.y;
@@ -43,6 +42,24 @@ bool getLastTarget(assignment2_rt::ReturnLastTarget::Request &req, assignment2_r
     return true;
 }
 
+void stateCallback(const actionlib::SimpleClientGoalState &state, const assignment_2_2024::PlanningResultConstPtr &result) {
+    if (state == actionlib::SimpleClientGoalState::SUCCEEDED) {
+        ROS_INFO("Target reached successfully!");
+    } else {
+        ROS_WARN("Target failed with state: %s", state.toString().c_str());
+    }
+}
+
+void goalCallback() {
+    ROS_INFO("Goal is now active.");
+}
+
+void feedbackCallback(const assignment_2_2024::PlanningFeedbackConstPtr &feedback) {
+    ROS_INFO("Feedback received from the action\n Current position -> x: %.2f, y: %.2f",
+             feedback->actual_pose.position.x,
+             feedback->actual_pose.position.y);
+}
+
 int main(int argc, char** argv) {
     ros::init(argc, argv, "Node1"); //initializes ros node as action client node
     ros::NodeHandle nh;
@@ -57,10 +74,12 @@ int main(int argc, char** argv) {
     ros::Publisher position_pub = nh.advertise<assignment2_rt::RobotPosition>("robot_position", 10); //pub robot pos information to robot_pos topic.
 
     
-    ros::Subscriber odom_sub = nh.subscribe<nav_msgs::Odometry>("/odom", 10, boost::bind(odomCallback, _1, position_pub)); 
-        //it subscribes to odom topic for receiving the robot's odometry data.
-        //CHECK BOOST::BIND
-        //boot::bind used for pass the position_pub publisher to the odomCallback
+    //here is the subscriber to the odometry data (before i used the boost::bind)
+    ros::Subscriber odom_sub = nh.subscribe<nav_msgs::Odometry>("/odom", 10, 
+    [&position_pub](const nav_msgs::Odometry::ConstPtr &msg) {
+        odomCallback(msg, position_pub);
+    });
+
 
     ros::ServiceServer service = nh.advertiseService("get_last_target", getLastTarget);
 
@@ -79,35 +98,20 @@ int main(int argc, char** argv) {
             cin >> target_y;
         
             assignment_2_2024::PlanningGoal goal; //here i fill an object TargetGoal goal and i fill it with the target values
+           
             goal.target_pose.pose.position.x = target_x;
             goal.target_pose.pose.position.y = target_y;
-            goal.target_pose.pose.orientation.w = 1.0; //default oreintation in quaternion check later 
-   
-            ac.sendGoal(goal,
-                [](const actionlib::SimpleClientGoalState &state,
-                   const assignment_2_2024::PlanningResultConstPtr &result) {
-                    if (state == actionlib::SimpleClientGoalState::SUCCEEDED) {
-                        ROS_INFO("Target reached successfully!");
-                    } else {
-                        ROS_WARN("Target failed with state: %s", state.toString().c_str());
-                    }
-                },
-                []() {
-                    ROS_INFO("Goal is now active.");
-                },
-                [](const assignment_2_2024::PlanningFeedbackConstPtr &feedback) {
-                    ROS_INFO("Feedback received: Current position -> x: %.2f, y: %.2f",
-                             feedback->actual_pose.position.x,
-                             feedback->actual_pose.position.y);
-                });
+            goal.target_pose.pose.orientation.w = 1.0;
+            
+                ac.sendGoal(goal, &stateCallback, &goalCallback, &feedbackCallback);
                 
                 targetCallback(goal); // so in this way i update last_x_target and last_y_target
 
-                      } else if (choice == 2) {
+      } else if (choice == 2) {
                 ROS_INFO("User selected to cancel the goal.");
                 ac.cancelGoal();
                 ROS_INFO("Goal canceled.");
-        } else {
+      } else {
             ROS_WARN("Invalid choice.");
         }
 
