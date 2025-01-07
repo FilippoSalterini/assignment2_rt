@@ -1,17 +1,17 @@
 # Assignment2_ROS1 - Research Track 1
 ## Overview
 This assignment requires to implements 2 nodes such that:
-1. **node 1** called **Node1**: A node that implements an action client, allowing the user to set a target (x, y) or to cancel it. Try to use the 
+1. **Node1**: A node that implements an action client, allowing the user to set a target (x, y) or to cancel it. Try to use the 
 feedback/status of the action server to know when the target has been reached. The node also publishes the
 robot position and velocity as a custom message (x,y, vel_x, vel_z), by relying on the values published on the
 topic /odom;
-2. **node 2** called **Node2_service**: A service node that, when called, returnsthe coordinates of the last target sent by the user;
+2. **Node2_service**: A service node that, when called, returnsthe coordinates of the last target sent by the user;
 
 ## Nodes
 
 ### NODE1 node description
 * File name: Node.cpp
-* Key Features:
+* Key Features: 
   
 
 ### DISTANCE node description
