@@ -12,10 +12,11 @@ topic /odom;
 * File name: Node1.cpp
 * Key Features:
 Defined some function :
-  1. ```void targetCallback(const assignment_2_2024::PlanningGoal& goal)``` this function is called when the user set a new target so it will update the 2 last_target *x* and *y* and store them on the parameter server.
-  2. ```void odomCallback(const nav_msgs::Odometry::ConstPtr& msg, ros::Publisher pub)``` so this functions is fundamental cause extract the robot's position amd velocities from a message from the /odom topic and publishes it as a custom message.  
-  3. ```bool getLastTarget(assignment2_rt::ReturnLastTarget::Request &req, assignment2_rt::ReturnLastTarget::Response &res)``` return last target set by users (it is a check if everything work fine).
-  4. ```void stateCallback(const actionlib::SimpleClientGoalState &state, const assignment_2_2024::PlanningResultConstPtr &result)``` , ```void goalCallback()``` and ```void feedbackCallback(const assignment_2_2024::PlanningFeedbackConstPtr &feedback)``` in order : handles the state of the reachment of the goal(if succesfull or not), triggered if the goal is activated and t last one is triggered periodically to report feedback on the robot's progress toward the target.  
+1. ```void targetCallback(const assignment_2_2024::PlanningGoal& goal)``` this function is called when the user set a new target so it will update the 2 last_target *x* and *y* and store them on the parameter server.
+2. ```void odomCallback(const nav_msgs::Odometry::ConstPtr& msg, ros::Publisher pub)``` so this functions is fundamental cause extract the robot's position amd velocities from a message from the /odom topic and publishes it as a custom message.  
+3. ```bool getLastTarget(assignment2_rt::ReturnLastTarget::Request &req, assignment2_rt::ReturnLastTarget::Response &res)``` return last target set by users (it is a check if everything work fine).
+4. ```void stateCallback(const actionlib::SimpleClientGoalState &state, const assignment_2_2024::PlanningResultConstPtr &result)``` , ```void goalCallback()``` and ```void feedbackCallback(const assignment_2_2024::PlanningFeedbackConstPtr &feedback)``` in order : handles the state of the reachment of the goal(if succesfull or not), triggered if the goal is activated and t last one is triggered periodically to report feedback on the robot's progress toward the target.
+
 Then inside the *main* :  
 The node is initialized with ros::init and also an action client ```SimpleActionClient``` is created to communicate with the action server. A subscriber is created for the /odom topic to receive robot position and velocity, as said before.  
 A service is advertised with ```advertiseService```  and allow other nodes to request the last target coordinates.
