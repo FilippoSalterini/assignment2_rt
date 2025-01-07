@@ -19,6 +19,10 @@ float last_y_target = 0.0;
 void targetCallback(const assignment_2_2024::PlanningGoal& goal) {
     last_x_target = goal.target_pose.pose.position.x;
     last_y_target = goal.target_pose.pose.position.y;
+    //here i update the parameters
+    ros::param::set("/last_x_target", last_x_target);
+    ros::param::set("/last_y_target", last_y_target);
+
     ROS_INFO("Updated last target to x = %.2f, y = %.2f", last_x_target, last_y_target);
 }
 
