@@ -35,3 +35,6 @@ Inside the main the most relevant features is that advertise the service named *
 2. Run Node1 by using ```rosrun assignment2_rt Node1``` it will ask to the user to choose [1] and set a target goal *(x,y)* to be reached by the robot, and [2] to cancel the target.
 If is set a target, while the robot is on his way to reach the target goal, typing 2 in the terminal and sending this input will automatically cancel the target and stop the robot.  Then, pressing 1 will allow you to select a new target.
 3. Run Node2_service by using ```rosrun assignment2_rt Node2_service```, and in the terminal it s possible to visualize *[INFO] Service 'get_last_target' is ready.*.  At this point in another tab of the terminal is possible to call ```rosservice call /get_last_target "{}"``` and visualizing by monitor the last target set.
+
+# NOTES  
+For other explanations check the comments in the codes.
