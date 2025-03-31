@@ -1,7 +1,10 @@
-/* A node that implements an action client, allowing the user to set a target (x, y) or to cancel it. Try to use the 
-feedback/status of the action server to know when the target has been reached. The node also publishes the
-robot position and velocity as a custom message (x,y, vel_x, vel_z), by relying on the values published on the
-topic/odom */
+/**
+* \file Node1.cpp
+* \author Filippo Salterini
+* \version 0.1
+* \date 27/02/2025
+**/
+
 
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>       //needed for creating the action client for communicating with server
@@ -15,6 +18,16 @@ using namespace std;
 
 float last_x_target = 0.0;
 float last_y_target = 0.0;
+
+/**
+* \brief TargetCallback function update the last known target choosen (x and y coordinates).
+* \param const assignment_2_2024::PlanningGoal& goal is a custom message type defined in ROS package assignment_2_2024,
+* it contains information about the goal the robot is supposed to reach.
+* \return always true as this method cannot fail.
+*
+* Description of the function
+* 
+*/
 
 void targetCallback(const assignment_2_2024::PlanningGoal& goal) {
     last_x_target = goal.target_pose.pose.position.x;
