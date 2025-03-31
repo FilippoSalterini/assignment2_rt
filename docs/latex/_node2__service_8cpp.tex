@@ -1,0 +1,80 @@
+\hypertarget{_node2__service_8cpp}{}\doxysection{src/\+Node2\+\_\+service.cpp File Reference}
+\label{_node2__service_8cpp}\index{src/Node2\_service.cpp@{src/Node2\_service.cpp}}
+
+
+This R\+OS node acts as an action client to communicate with an action server and provides the last set target coordinates.  
+
+
+{\ttfamily \#include \char`\"{}ros/ros.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}assignment2\+\_\+rt/\+Return\+Last\+Target.\+h\char`\"{}}\newline
+Include dependency graph for Node2\+\_\+service.\+cpp\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=306pt]{_node2__service_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{_node2__service_8cpp_a1591e5d0f05c91b632f1d300894d8ff8}{get\+Last\+Target}} (assignment2\+\_\+rt\+::\+Return\+Last\+Target\+::\+Request \&req, assignment2\+\_\+rt\+::\+Return\+Last\+Target\+::\+Response \&res)
+\begin{DoxyCompactList}\small\item\em This functions handles service requests, it checks the parameter server for the values of last\+\_\+x\+\_\+target and last\+\_\+y\+\_\+target and assigns them to the service response res.\+x and res.\+y. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{_node2__service_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char $\ast$$\ast$argv)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This R\+OS node acts as an action client to communicate with an action server and provides the last set target coordinates. 
+
+\begin{DoxyAuthor}{Author}
+Filippo Salterini 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+31/03/2025 
+\end{DoxyDate}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{_node2__service_8cpp_a1591e5d0f05c91b632f1d300894d8ff8}\label{_node2__service_8cpp_a1591e5d0f05c91b632f1d300894d8ff8}} 
+\index{Node2\_service.cpp@{Node2\_service.cpp}!getLastTarget@{getLastTarget}}
+\index{getLastTarget@{getLastTarget}!Node2\_service.cpp@{Node2\_service.cpp}}
+\doxysubsubsection{\texorpdfstring{getLastTarget()}{getLastTarget()}}
+{\footnotesize\ttfamily bool get\+Last\+Target (\begin{DoxyParamCaption}\item[{assignment2\+\_\+rt\+::\+Return\+Last\+Target\+::\+Request \&}]{req,  }\item[{assignment2\+\_\+rt\+::\+Return\+Last\+Target\+::\+Response \&}]{res }\end{DoxyParamCaption})}
+
+
+
+This functions handles service requests, it checks the parameter server for the values of last\+\_\+x\+\_\+target and last\+\_\+y\+\_\+target and assigns them to the service response res.\+x and res.\+y. 
+
+Retrieves the last target coordinates (x, y) from the R\+OS parameter server. 
+\begin{DoxyParams}{Parameters}
+{\em req} & The service request. \\
+\hline
+{\em res} & The service response containing the last target coordinates. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the last target was successfully retrieved, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{_node2__service_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{_node2__service_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+\index{Node2\_service.cpp@{Node2\_service.cpp}!main@{main}}
+\index{main@{main}!Node2\_service.cpp@{Node2\_service.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+Initialize the R\+OS node. 
+\begin{DoxyParams}{Parameters}
+{\em argc} & Number of command-\/line arguments. \\
+\hline
+{\em argv} & Array of command-\/line arguments.\\
+\hline
+\end{DoxyParams}
+Create a node handle.
+
+Advertise the \char`\"{}get\+\_\+last\+\_\+target\char`\"{} service.
+
+This service allows clients to request the last known target coordinates.
+
+Keep the node running and process service requests.

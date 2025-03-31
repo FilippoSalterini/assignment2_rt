@@ -1,0 +1,5 @@
+<map id="src/Node2_service.cpp" name="src/Node2_service.cpp">
+<area shape="rect" id="node1" title="This ROS node acts as an action client to communicate with an action server and provides the last set..." alt="" coords="42,5,210,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,87,84,114"/>
+<area shape="rect" id="node3" title=" " alt="" coords="109,80,306,121"/>
+</map>
