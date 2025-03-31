@@ -4,8 +4,8 @@
 * \version 0.1
 * \date 31/03/2025
 *
-* \brief A node that implements an action client, allowing the user to set a target (x, y) or to cancel it. Try to use the feedback/status of the action server to know
-*   when the target has been reached. The node also publishes the robot position and velocity as a custom message (x,y, vel_x, vel_z), by relying * on the values
+* \brief This ROS node acts as an action client to communicate with an action server.A node that implements an action client, allowing the user to set a target (x, y) or to cancel it. Try to use the feedback/status of the action server to know
+*   when the target has been reached. The node also publishes the robot position and velocity as a custom message (x,y, vel_x, vel_z), by relying on the values
 *   published on the topic /odom.
 *
 * \details
@@ -17,6 +17,11 @@
 *   /get_last_target (assignment2_rt::ReturnLastTarget): Returns the last target set.
 *  Uses Action Clients:
 *   /reaching_goal (assignment_2_2024::PlanningAction): Sends a goal to the robot.
+*
+*  Description:
+* A node that implements an action client, allowing the user to set a target (x, y) or to cancel it. Try to use the feedback/status of the action server to know
+*   when the target has been reached. The node also publishes the robot position and velocity as a custom message (x,y, vel_x, vel_z), by relying on the values
+*   published on the topic /odom.
 **/
 
 #include <ros/ros.h>
